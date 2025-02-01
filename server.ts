@@ -24,11 +24,11 @@ app.put('/pedidos/:id', pedidoController.update);
 app.delete('/pedidos/:id', pedidoController.destroy);
 
 app.get('/', (req: Request, res: Response) => {
-  res.send('API Funcionando!');
+  res.send('Funcionou');
 });
 
 const port = process.env.PORT;
 
 app.listen(port, () => {
-  console.log(`Servidor rodando na porta ${port}`);
+  console.log(`Servidor porta ${port}`);
 });
