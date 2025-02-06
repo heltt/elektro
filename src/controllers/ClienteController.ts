@@ -3,56 +3,80 @@ import { Request, Response } from 'express';
 
 const prisma = new PrismaClient();
 
-async function create(request: Request, response: Response) {
-    try {
-        const cliente = await prisma.cliente.create({ data: request.body });
-        response.status(201).json(cliente);
-    } catch (error) {
-        response.status(500).json({ error });
+class ClienteController {
+    public async create(req: Request, res: Response) {
+        try {
+          const { nome, email, cpf, telefone, senha } = req.body;
+    
+          const cliente = await prisma.cliente.create({
+            data: { nome, email, cpf, telefone, senha },
+          });
+    
+          res.status(201).json({
+            message: "Cliente criado com sucesso",
+            cliente: cliente,
+          });
+        } catch (error) {
+          res.status(400).json({error: "Erro ao criar cliente"});
+        }
     }
-}
 
-async function read(request: Request, response: Response) {
-    const { id } = request.params;
-    try {
-        const cliente = await prisma.cliente.findUnique({ where: { id: Number(id) } });
-        response.status(200).json(cliente);
-    } catch (error) {
-        response.status(500).json({ error });
+    public async read(req: Request, res: Response) {
+        try {
+            const { id } = req.params;
+            const cliente = await prisma.cliente.findUnique({
+                where: { id: Number(id) },
+            });
+    
+            if (!cliente){
+                res.status(404).json({ error: "Cliente não encontrado" });
+            }
+            else{
+                res.status(200).json(cliente);
+            }
+        } catch (error) {
+            res.status(500).json({ error: "Erro ao buscar cliente" });
+        }
     }
-}
 
-async function readAll(request: Request, response: Response) {
-    try {
-        const clientes = await prisma.cliente.findMany();
-        response.status(200).json(clientes);
-    } catch (error) {
-        response.status(500).json({ error });
+    public async readAll(req: Request, res: Response) {
+        try {
+            const clientes = await prisma.cliente.findMany();
+            res.status(200).json(clientes);
+        } catch (error) {
+            res.status(500).json({ error: "Erro ao buscar clientes"});
+        }
     }
-}
 
-async function update(request: Request, response: Response) {
-    const { id } = request.params;
-    try {
-        const cliente = await prisma.cliente.update({
+    public async update(req: Request, res: Response) {
+        try {
+          const { id } = req.params;
+          const { nome, email, cpf, telefone, senha } = req.body;
+    
+          const cliente = await prisma.cliente.update({
             where: { id: Number(id) },
-            data: request.body,
-        });
-        response.status(200).json(cliente);
-    } catch (error) {
-        response.status(500).json({ error });
+            data: { nome, email, cpf, telefone, senha },
+          });
+    
+          res.json(cliente);
+        } catch (error) {
+          res.status(400).json({ error: "Erro ao atualizar cliente" });
+        }
+    }
+
+    public async delete(req: Request, res: Response) {
+        try {
+          const { id } = req.params;
+    
+          await prisma.cliente.delete({
+            where: { id: Number(id) },
+          });
+    
+          res.status(204).send();
+        } catch (error) {
+          res.status(400).json({ error: "Erro ao deletar cliente" });
+        }
     }
 }
 
-async function destroy(request: Request, response: Response) {
-    const { id } = request.params;
-    try {
-        const cliente = await prisma.cliente.delete({
-             where: { id: Number(id) } });
-        response.status(204).json(cliente);
-    } catch (error) {
-        response.status(500).json({ error:error });
-    }
-}
-
-export default { create, read, readAll, update, destroy };
+export default new ClienteController();

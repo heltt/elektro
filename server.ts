@@ -1,34 +1,17 @@
-import express, { Request, Response } from 'express';
+import express from 'express';
 import dotenv from 'dotenv';
-import { PrismaClient } from '@prisma/client';
-import clienteController from './src/controllers/ClienteController';
-import pedidoController from './src/controllers/PedidoController';
+import router from './src/routes/routes';  // Importando as rotas do arquivo routes.ts
 
 dotenv.config();
 
 const app = express();
-const prisma = new PrismaClient();
+const PORT = process.env.PORT;
 
-app.use(express.json());
+app.use(express.json());  // Middleware para parsing de JSON  // Usando as rotas com prefixo /api
+app.use(express.urlencoded({ extended: true }));
+app.use(router)
 
-app.post('/clientes', clienteController.create);
-app.get('/clientes', clienteController.readAll);
-app.get('/clientes/:id', clienteController.read);
-app.put('/clientes/:id', clienteController.update);
-app.delete('/clientes/:id', clienteController.destroy);
 
-app.post('/pedidos', pedidoController.create);
-app.get('/pedidos', pedidoController.readAll);
-app.get('/pedidos/:id', pedidoController.read);
-app.put('/pedidos/:id', pedidoController.update);
-app.delete('/pedidos/:id', pedidoController.destroy);
-
-app.get('/', (req: Request, res: Response) => {
-  res.send('Funcionou');
-});
-
-const port = process.env.PORT;
-
-app.listen(port, () => {
-  console.log(`Servidor porta ${port}`);
+app.listen(PORT, () => {
+  console.log(`Servidor rodando na porta ${PORT}`);
 });

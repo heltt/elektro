@@ -3,8 +3,8 @@ import { PrismaClient, Prisma } from '@prisma/client';
 
 const prisma = new PrismaClient();
 
-class ProdutoController {
+class CarrinhoController {
 
 }
 
-export default new ProdutoController();
+export default new CarrinhoController();
