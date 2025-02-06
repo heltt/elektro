@@ -52,10 +52,11 @@ async function update(request: Request, response: Response) {
 async function destroy(request: Request, response: Response) {
     const { id } = request.params;
     try {
-        await prisma.pedido.delete({ where: { id: Number(id) } });
-        response.status(204).send();
+        const pedido = await prisma.pedido.delete({
+             where: { id: Number(id) } });
+        response.status(204).json(pedido);
     } catch (error) {
-        response.status(500).json({ error });
+        response.status(500).json({ error:error });
     }
 }
 

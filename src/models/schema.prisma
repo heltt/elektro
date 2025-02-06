@@ -14,44 +14,88 @@ datasource db {
 }
 
 model Cliente {
-  id       Int   @id @default(autoincrement())
-  nome     String
-  email    String   @unique
-  cpf      String   @unique
-  telefone String?
-  senha    String
-  pedidos  Pedido[]
+  idCliente  Int   @id @default(autoincrement())
+  nome       String
+  email      String   @unique
+  cpf        String   @unique
+  telefone   String
+  senha      String
+
+  favoritos  Favorito[] 
+  produtos   Produto[]
+
+  carrinho   Carrinho?
+  pedidos    Pedido[]
+  cupons     Cupom[]
+}
+
+model Cupom {
+  idCupom     Int        @id @default(autoincrement())
+  codigo      String     
+  tipo        String
+  validade    DateTime
+  descricao   String
+
+  idCliente   Int
+  cliente     Cliente    @relation(fields: [idCliente], references: [idCliente])
+  carrinho    Carrinho? 
+}
+
+model Carrinho {
+  idCarrinho     Int        @id @default(autoincrement())
+  itens          Produto[]
+  valorTotal     Float
+
+  idCliente      Int        @unique
+  cliente        Cliente    @relation(fields: [idCliente], references: [idCliente], onDelete: Cascade)
+
+  idCupom        Int?       @unique
+  cupom          Cupom?     @relation(fields: [idCupom], references: [idCupom], onDelete: SetNull)
 }
 
 model Pedido {
-  id          Int   @id @default(autoincrement())
-  data        DateTime @default(now())
+  idPedido    Int       @id @default(autoincrement())
+  data        DateTime  @default(now())
   valorTotal  Float
   endereco    String
   cep         String
   numero      String
   bairro      String
   cidade      String
-  pagamento  String
-  clienteId   Int
-  cliente     Cliente  @relation(fields: [clienteId], references: [id])
-  produtos    PedidoProduto[]
+  pagamento   String
+
+  idCliente   Int
+  cliente     Cliente   @relation(fields: [idCliente], references: [idCliente], onDelete: Cascade)
+
+  produtos    Produto[]
+}
+
+model Favorito {
+  idFavorito  Int       @id @default(autoincrement())
+  data        DateTime  @default(now())
+  
+  idCliente   Int
+  cliente     Cliente   @relation(fields: [idCliente], references: [idCliente], onDelete: Cascade)
+
+  idProduto   Int
+  produto     Produto   @relation(fields: [idProduto], references: [idProduto], onDelete: Cascade)
 }
 
 model Produto {
-  id         Int   @id @default(autoincrement())
-  nome       String
-  descricao  String?
-  preco      Float
-  qtdEstoque Int
-  cor        String?
-  pedidos    PedidoProduto[]
-}
+  idProduto    Int         @id @default(autoincrement())
+  nome         String
+  descricao    String?
+  preco        Float
+  cor          String?
+  favoritados  Favorito[]
+  
+  idPedido     Int?        
+  pedido       Pedido?     @relation(fields: [idPedido], references: [idPedido])
 
-model PedidoProduto {
-  id        Int  @id @default(autoincrement())
-  pedidoId  Int
-  produtoId Int
-  pedido    Pedido @relation(fields: [pedidoId], references: [id])
-  produto   Produto @relation(fields: [produtoId], references: [id])
+  idCarrinho   Int?        
+  carrinho     Carrinho?   @relation(fields: [idCarrinho], references: [idCarrinho])
+
+  idCliente    Int         
+  cliente      Cliente     @relation(fields: [idCliente], references: [idCliente])
+
 }
