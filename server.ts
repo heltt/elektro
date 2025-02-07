@@ -2,6 +2,12 @@ import express from 'express';
 import dotenv from 'dotenv';
 import router from './src/routes/routes';  // Importando as rotas do arquivo routes.ts
 
+import { PrismaClient, Prisma } from '@prisma/client';
+
+const prisma = new PrismaClient();
+console.log(Object.keys(prisma));
+
+
 dotenv.config();
 
 const app = express();

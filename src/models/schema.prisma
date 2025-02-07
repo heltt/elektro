@@ -72,7 +72,6 @@ model Pedido {
 
 model Favorito {
   id             Int       @id @default(autoincrement())
-  data           DateTime  @default(now())
   
   clienteId      Int
   cliente        Cliente    @relation(fields: [clienteId], references: [id], onDelete: Cascade)

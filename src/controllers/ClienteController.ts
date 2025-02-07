@@ -58,13 +58,13 @@ class ClienteController {
             data: { nome, email, cpf, telefone, senha },
           });
     
-          res.json(cliente);
+          res.status(200).json(cliente);
         } catch (error) {
           res.status(400).json({ error: "Erro ao atualizar cliente" });
         }
     }
 
-    public async delete(req: Request, res: Response) {
+    public async destroy(req: Request, res: Response) {
         try {
           const { id } = req.params;
     
