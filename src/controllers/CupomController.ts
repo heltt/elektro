@@ -1,8 +1,7 @@
+import { PrismaClient } from '@prisma/client';
 import { Request, Response } from 'express';
-import { PrismaClient, Prisma } from '@prisma/client';
 
 const prisma = new PrismaClient();
-console.log(Object.keys(prisma));
 
 class CupomController {
     public async create(req: Request, res: Response) {
@@ -152,11 +151,11 @@ class CupomController {
             const { clienteId } = req.params;
 
             // Verifica se o cliente existe
-            const clienteExists = await prisma.cliente.findUnique({
+            const cliente = await prisma.cliente.findUnique({
                 where: { id: Number(clienteId) },
             });
 
-            if (!clienteExists) {
+            if (!cliente) {
                 res.status(404).json({ error: "Cliente não encontrado" });
                 return;
             }
