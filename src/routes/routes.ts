@@ -5,11 +5,13 @@ import CupomController from '../controllers/CupomController';
 import FavoritoController from '../controllers/FavoritoController';
 import PedidoController from '../controllers/PedidoController';
 import ProdutoController from '../controllers/ProdutoController';
+import { ClienteValidator } from '../config/validator';
+import { ResultValidator } from '../middlewares/ResultValidator';
 import passport from 'passport';
 
 const routes = Router();
 
-routes.post("/clientes", ClienteController.create);
+routes.post("/clientes", ClienteValidator.validateCliente("create"), ResultValidator.validateResult, ClienteController.create);
 routes.get("/clientes", ClienteController.readAll);
 routes.get("/clientes/:id", ClienteController.read);
 routes.put("/clientes/:id", ClienteController.update);
