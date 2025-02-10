@@ -1,21 +1,24 @@
 import express from 'express';
-import dotenv from 'dotenv';
-import router from './src/routes/routes';  // Importando as rotas do arquivo routes.ts
+import configDotenv from './src/config/dotenv';
+import routes from './src/routes/routes';  // Importando as rotas do arquivo routes.ts
+import passport from 'passport';
+import configAuth from './src/middlewares/checkAuth'
 
 import { PrismaClient, Prisma } from '@prisma/client';
 
 const prisma = new PrismaClient();
 console.log(Object.keys(prisma));
 
-
-dotenv.config();
+configAuth();
+configDotenv();
 
 const app = express();
 const PORT = process.env.PORT;
 
-app.use(express.json());  // Middleware para parsing de JSON  // Usando as rotas com prefixo /api
+app.use(express.json()); 
+app.use(passport.initialize()) 
 app.use(express.urlencoded({ extended: true }));
-app.use(router)
+app.use(routes)
 
 
 app.listen(PORT, () => {

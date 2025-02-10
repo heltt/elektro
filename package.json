@@ -6,6 +6,7 @@
   "scripts": {
     "start": "npx ts-node-dev --transpile-only --no-notify server.ts",
     "test": "echo \"Error: no test specified\" && exit 1",
+    "keys": "npx ts-node src/config/generateKeyPair.ts",
     "seed": "ts-node src/database/seeder.ts"
   },
   "prisma": {
@@ -34,6 +35,10 @@
     "typescript": "^5.7.3"
   },
   "dependencies": {
-    "@faker-js/faker": "^9.4.0"
+    "@faker-js/faker": "^9.4.0",
+    "@types/passport-jwt": "^4.0.1",
+    "jsonwebtoken": "^9.0.2",
+    "passport": "^0.7.0",
+    "passport-jwt": "^4.0.1"
   }
 }

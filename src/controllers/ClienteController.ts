@@ -1,20 +1,22 @@
 import { PrismaClient } from '@prisma/client';
 import { Request, Response } from 'express';
+import auth from '../config/auth';
 
 const prisma = new PrismaClient();
 
 class ClienteController {
     public async create(req: Request, res: Response) {
         try {
-          const { nome, email, cpf, telefone, senha } = req.body;
-    
+          const { nome, email, cpf, telefone, senha} = req.body;
+          const { hash, salt } = auth.generatePassword(senha)
           const cliente = await prisma.cliente.create({
-            data: { nome, email, cpf, telefone, senha },
+            data: { nome, email, cpf, telefone, hash, salt},
           });
-    
+          const token = auth.generateJWT(cliente);
           res.status(201).json({
             message: "Cliente criado com sucesso",
             cliente: cliente,
+            token: token
           });
         } catch (error) {
           res.status(400).json({error: "Erro ao criar cliente"});
@@ -51,11 +53,11 @@ class ClienteController {
     public async update(req: Request, res: Response) {
         try {
           const { id } = req.params;
-          const { nome, email, cpf, telefone, senha } = req.body;
+          const { nome, email, cpf, telefone} = req.body;
     
           const cliente = await prisma.cliente.update({
             where: { id: Number(id) },
-            data: { nome, email, cpf, telefone, senha },
+            data: { nome, email, cpf, telefone},
           });
     
           res.status(200).json(cliente);
@@ -66,13 +68,12 @@ class ClienteController {
 
     public async destroy(req: Request, res: Response) {
         try {
-          const { id } = req.params;
-    
-          await prisma.cliente.delete({
+          const id  = req.user;
+          const cliente = await prisma.cliente.delete({
             where: { id: Number(id) },
           });
     
-          res.status(204).send();
+          res.status(204).json(cliente);
         } catch (error) {
           res.status(400).json({ error: "Erro ao deletar cliente" });
         }
