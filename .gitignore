@@ -5,6 +5,6 @@ node_modules/
     *.jpg
     .env
     .idea
-elektro/.env
-elektro/id_rsa_priv.pem
+/.env
+/id_rsa_priv.pem
     
