@@ -29,6 +29,12 @@ class ClienteController {
             const { id } = req.params;
             const cliente = await prisma.cliente.findUnique({
                 where: { id: Number(id) },
+                include: { produtos: true,
+                           favoritos: true,
+                           cupons: true,
+                           pedidos: true,
+                           carrinho: true
+                 },
             });
     
             if (!cliente){

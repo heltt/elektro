@@ -7,7 +7,6 @@ import configAuth from './src/middlewares/checkAuth'
 import { PrismaClient, Prisma } from '@prisma/client';
 
 const prisma = new PrismaClient();
-console.log(Object.keys(prisma));
 
 configAuth();
 configDotenv();

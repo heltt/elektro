@@ -1,13 +1,18 @@
 import { Router } from 'express';
+
 import CarrinhoController from '../controllers/CarrinhoController';
 import ClienteController from '../controllers/ClienteController';
 import CupomController from '../controllers/CupomController';
 import FavoritoController from '../controllers/FavoritoController';
 import PedidoController from '../controllers/PedidoController';
 import ProdutoController from '../controllers/ProdutoController';
+
 import { ClienteValidator } from '../config/validator';
 import { ResultValidator } from '../middlewares/ResultValidator';
+import { photoUpload } from "../config/uploader";
 import passport from 'passport';
+
+
 
 const routes = Router();
 
@@ -30,6 +35,8 @@ routes.get("/produtos/:id", ProdutoController.read);
 routes.get("/clientes/:clienteId/produtos", ProdutoController.readAll);
 routes.put("/produtos/:id", ProdutoController.update);
 routes.delete("/produtos/:id", ProdutoController.destroy);
+
+routes.post("/produtos/:produtoId/addImg",photoUpload.single("imagem"))
 
 
 routes.post("/clientes/:clienteId/novoFavorito/:produtoId", FavoritoController.create);
