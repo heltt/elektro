@@ -6,8 +6,6 @@ const storage = multer.diskStorage({
   destination: function (request: Request, file, callBack) {
     let destinationFolder;
 
-    // Não esqueça de criar as pastas "videos", "audios" e "photos" como pastas filhas de uploads
-
     if (file.mimetype.startsWith("video/")) {
       destinationFolder = path.join(__dirname, "..", "..", "uploads", "videos");
     } else if (file.mimetype.startsWith("audio/")) {

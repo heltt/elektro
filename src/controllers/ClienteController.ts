@@ -26,7 +26,7 @@ class ClienteController {
 
     public async read(req: Request, res: Response) {
         try {
-            const { id } = req.params;
+            const id = req.user;
             const cliente = await prisma.cliente.findUnique({
                 where: { id: Number(id) },
                 include: { produtos: true,
@@ -59,7 +59,7 @@ class ClienteController {
 
     public async update(req: Request, res: Response) {
         try {
-          const { id } = req.params;
+          const id = req.user;
           const { nome, email, cpf, telefone} = req.body;
     
           const cliente = await prisma.cliente.update({

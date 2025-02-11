@@ -16,11 +16,11 @@ import passport from 'passport';
 
 const routes = Router();
 
-routes.post("/clientes", ClienteValidator.validateCliente("create"), ResultValidator.validateResult, ClienteController.create);
+routes.post("/cliente", ClienteValidator.validateCliente("create"), ResultValidator.validateResult, ClienteController.create);
 routes.get("/clientes", ClienteController.readAll);
-routes.get("/clientes/:id", ClienteController.read);
-routes.put("/clientes/:id", ClienteController.update);
-routes.delete("/user", passport.authenticate('jwt', {session:false}), ClienteController.destroy);
+routes.get("/cliente", passport.authenticate('jwt', {session:false}), ClienteController.read);
+routes.put("/cliente", passport.authenticate('jwt', {session:false}), ClienteController.update);
+routes.delete("/cliente", passport.authenticate('jwt', {session:false}), ClienteController.destroy);
 
 
 routes.post("/clientes/:clienteId/novoCupom", CupomController.create);
