@@ -7,20 +7,24 @@ import FavoritoController from '../controllers/FavoritoController';
 import PedidoController from '../controllers/PedidoController';
 import ProdutoController from '../controllers/ProdutoController';
 
-import { ClienteValidator } from '../config/validator';
+import { ClienteValidator, ProdutoValidator } from '../config/validator';
 import { ResultValidator } from '../middlewares/ResultValidator';
 import { photoUpload } from "../config/uploader";
 import passport from 'passport';
 
 
-
 const routes = Router();
+
 
 // Rotas de cliente
 routes.post("/cliente", ClienteValidator.validateCliente("create"), ResultValidator.validateResult, ClienteController.create);
 routes.get("/clientes", ClienteController.readAll);
 routes.get("/cliente", passport.authenticate('jwt', {session:false}), ClienteController.read);
-routes.put("/cliente", passport.authenticate('jwt', {session:false}), ClienteController.update);
+routes.put("/cliente", ClienteValidator.validateCliente("update"),
+                       ResultValidator.validateResult,
+                       passport.authenticate('jwt', {session:false}),
+                       ClienteController.update);
+
 routes.delete("/cliente", passport.authenticate('jwt', {session:false}), ClienteController.destroy);
 
 
@@ -34,9 +38,15 @@ routes.get("/cliente/meusCupons", passport.authenticate('jwt', {session:false}),
 
 // Rotas de produtos
 routes.get("/produtos/:id", ProdutoController.read);
-routes.post("/cliente/novoProduto", passport.authenticate('jwt', {session:false}), ProdutoController.create);
+routes.post("/cliente/novoProduto", ProdutoValidator.validateProduto("create"),
+                                    ResultValidator.validateResult,
+                                    passport.authenticate('jwt', {session:false}),
+                                    ProdutoController.create);
 routes.get("/cliente/meusProdutos", passport.authenticate('jwt', {session:false}), ProdutoController.readAll);
-routes.put("/cliente/meusProdutos/:id", passport.authenticate('jwt', {session:false}), ProdutoController.update);
+routes.put("/cliente/meusProdutos/:id", ProdutoValidator.validateProduto("update"),
+                                        ResultValidator.validateResult,
+                                        passport.authenticate('jwt', {session:false}),
+                                        ProdutoController.update);
 routes.delete("/cliente/meusProdutos/:id", passport.authenticate('jwt', {session:false}), ProdutoController.destroy);
 routes.post("/cliente/meusProdutos/:produtoId/addImg", passport.authenticate('jwt', {session:false}), photoUpload.single("imagem"))
 
