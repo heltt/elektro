@@ -39,7 +39,7 @@ const photoUpload = multer({
       return callBack(new Error());
     }
 
-    callBack(null, true); // Aceita o arquivo, caso seja do tipo suportado
+    callBack(null, true); 
   },
 });
 

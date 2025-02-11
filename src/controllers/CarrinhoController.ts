@@ -6,7 +6,7 @@ const prisma = new PrismaClient();
 class CarrinhoController {
     public async create(req: Request, res: Response) {
         try {
-            const { clienteId } = req.params;
+            const clienteId = req.user;
 
             const carrinhoExistente = await prisma.carrinho.findUnique({
                 where: { clienteId: Number(clienteId) },
@@ -33,7 +33,8 @@ class CarrinhoController {
 
     public async addProduto(req: Request, res: Response) {
         try {
-            const { carrinhoId, produtoId } = req.params;
+            const { produtoId } = req.params;
+            const clienteId = req.user;
 
             const produto = await prisma.produto.findUnique({
                 where: { id: Number(produtoId) },
@@ -45,7 +46,7 @@ class CarrinhoController {
             }
 
             const carrinho = await prisma.carrinho.update({
-                where: { id: Number(carrinhoId) },
+                where: { clienteId: Number(clienteId) },
                 data: {
                     itens: { connect: { id: Number(produtoId) } },
                     valorTotal: { increment: produto.preco }, 
@@ -61,8 +62,9 @@ class CarrinhoController {
 
     public async removeProduto(req: Request, res: Response) {
         try {
-            const { carrinhoId, produtoId } = req.params;
-
+            const { produtoId } = req.params;
+            const clienteId = req.user;
+            
             const produto = await prisma.produto.findUnique({
                 where: { id: Number(produtoId) },
             });
@@ -73,7 +75,7 @@ class CarrinhoController {
             }
 
             const carrinho = await prisma.carrinho.update({
-                where: { id: Number(carrinhoId) },
+                where: { clienteId: Number(clienteId) },
                 data: {
                     itens: { disconnect: { id: Number(produtoId) } },
                     valorTotal: { decrement: produto.preco }, 
@@ -89,10 +91,10 @@ class CarrinhoController {
 
     public async read(req: Request, res: Response) {
         try {
-            const { carrinhoId } = req.params;
-
+            const clienteId = req.user;
+    
             const carrinho = await prisma.carrinho.findUnique({
-                where: { id: Number(carrinhoId) },
+                where: { id: Number(clienteId) },
                 include: { itens: true, cupom: true },
             });
 
@@ -110,7 +112,7 @@ class CarrinhoController {
 
     public async clearCarrinho(req: Request, res: Response) {
         try {
-            const { clienteId } = req.params;
+            const clienteId = req.user;
     
             const carrinho = await prisma.carrinho.findUnique({
                 where: { clienteId: Number(clienteId) },
@@ -138,7 +140,8 @@ class CarrinhoController {
 
     public async applyCupom(req: Request, res: Response) {
         try {
-            const { carrinhoId, cupomId } = req.params;
+            const { cupomId } = req.params;
+            const clienteId = req.user;
 
             const cupom = await prisma.cupom.findUnique({
                 where: { id: Number(cupomId) },
@@ -149,14 +152,24 @@ class CarrinhoController {
                 return;
             }
 
-            const carrinho = await prisma.carrinho.update({
-                where: { id: Number(carrinhoId) },
+    
+            const carrinho = await prisma.carrinho.findUnique({
+                where: { clienteId: Number(clienteId) },
+            });
+    
+            if (!carrinho) {
+                res.status(404).json({ error: "Carrinho não encontrado" });
+                return;
+            }
+
+            const carrinhoAtualizado = await prisma.carrinho.update({
+                where: { id: Number(carrinho.id) },
                 data: {
                     cupom: { connect: { id: Number(cupomId) } },
                 },
             });
 
-            res.status(200).json({ message: "Cupom aplicado com sucesso", carrinho });
+            res.status(200).json({ message: "Cupom aplicado com sucesso", carrinhoAtualizado });
         } catch (error) {
             console.error("Erro ao aplicar cupom:", error);
             res.status(400).json({ error: "Erro ao aplicar cupom" });

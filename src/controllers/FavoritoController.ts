@@ -7,8 +7,8 @@ class FavoritoController {
     
     public async create(req: Request, res: Response) {
         try {
-            const { clienteId, produtoId } = req.params;
-
+            const { produtoId } = req.params;
+            const clienteId = req.user;
             const produto = await prisma.produto.findUnique({
                 where: { id: Number(produtoId) },
             });
@@ -70,7 +70,7 @@ class FavoritoController {
 
     public async readAll(req: Request, res: Response) {
         try {
-            const { clienteId } = req.params;
+            const clienteId = req.user;
 
             const favoritos = await prisma.favorito.findMany({
                 where: { clienteId: Number(clienteId) },
@@ -88,10 +88,10 @@ class FavoritoController {
 
     public async destroy(req: Request, res: Response) {
         try {
-            const { id } = req.params;
+            const { favoritoId } = req.params;
 
             const favorito = await prisma.favorito.delete({
-                where: { id: Number(id) },
+                where: { id: Number(favoritoId) },
             });
 
             res.status(204).json({

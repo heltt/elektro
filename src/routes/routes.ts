@@ -16,6 +16,7 @@ import passport from 'passport';
 
 const routes = Router();
 
+// Rotas de cliente
 routes.post("/cliente", ClienteValidator.validateCliente("create"), ResultValidator.validateResult, ClienteController.create);
 routes.get("/clientes", ClienteController.readAll);
 routes.get("/cliente", passport.authenticate('jwt', {session:false}), ClienteController.read);
@@ -23,38 +24,43 @@ routes.put("/cliente", passport.authenticate('jwt', {session:false}), ClienteCon
 routes.delete("/cliente", passport.authenticate('jwt', {session:false}), ClienteController.destroy);
 
 
-routes.post("/clientes/:clienteId/novoCupom", CupomController.create);
+// Rotas de cupons
 routes.get("/cupons/:id", CupomController.read);
-routes.get("/clientes/:clienteId/cupons", CupomController.readAll);
 routes.put("/cupons/:id", CupomController.update);
 routes.delete("/cupons/:id", CupomController.destroy);
+routes.post("/cliente/addCupom", passport.authenticate('jwt', {session:false}), CupomController.create);
+routes.get("/cliente/meusCupons", passport.authenticate('jwt', {session:false}), CupomController.readAll);
 
 
-routes.post("/clientes/:clienteId/novoProduto", ProdutoController.create);
+// Rotas de produtos
 routes.get("/produtos/:id", ProdutoController.read);
-routes.get("/clientes/:clienteId/produtos", ProdutoController.readAll);
-routes.put("/produtos/:id", ProdutoController.update);
-routes.delete("/produtos/:id", ProdutoController.destroy);
+routes.post("/cliente/novoProduto", passport.authenticate('jwt', {session:false}), ProdutoController.create);
+routes.get("/cliente/meusProdutos", passport.authenticate('jwt', {session:false}), ProdutoController.readAll);
+routes.put("/cliente/meusProdutos/:id", passport.authenticate('jwt', {session:false}), ProdutoController.update);
+routes.delete("/cliente/meusProdutos/:id", passport.authenticate('jwt', {session:false}), ProdutoController.destroy);
+routes.post("/cliente/meusProdutos/:produtoId/addImg", passport.authenticate('jwt', {session:false}), photoUpload.single("imagem"))
 
-routes.post("/produtos/:produtoId/addImg",photoUpload.single("imagem"))
 
-
-routes.post("/clientes/:clienteId/novoFavorito/:produtoId", FavoritoController.create);
+// Rotas de favoritos
+routes.post("/cliente/novoFavorito/:produtoId", passport.authenticate('jwt', {session:false}), FavoritoController.create);
 routes.get("/favoritos/:id", FavoritoController.read);
-routes.get("/clientes/:clienteId/favoritos", FavoritoController.readAll);
-routes.delete("/favoritos/:id", FavoritoController.destroy);
+routes.get("/clientes/meusFavoritos", passport.authenticate('jwt', {session:false}),FavoritoController.readAll);
+routes.delete("/cliente/meusFavoritos/:id", passport.authenticate('jwt', {session:false}),FavoritoController.destroy);
 
 
-routes.post("/clientes/:clienteId/novoCarrinho", CarrinhoController.create);
-routes.get("/carrinho/:carrinhoId", CarrinhoController.read);
-routes.put("/clientes/:clienteId/clearCarrinho", CarrinhoController.clearCarrinho);
-routes.put("/carrinho/:carrinhoId/addProduto/:produtoId", CarrinhoController.addProduto);
-routes.put("/carrinho/:carrinhoId/removeProduto/:produtoId", CarrinhoController.removeProduto);
-routes.put("/carrinho/:carrinhoId/applyCupom/:cupomId", CarrinhoController.applyCupom);
+// Rotas de carrinho
+routes.post("/carrinho", passport.authenticate('jwt', {session:false}), CarrinhoController.create);
+routes.get("/carrinho", passport.authenticate('jwt', {session:false}), CarrinhoController.read);
+routes.put("/carrinho/clear", passport.authenticate('jwt', {session:false}), CarrinhoController.clearCarrinho);
+routes.put("/carrinho/addProduto/:produtoId", passport.authenticate('jwt', {session:false}), CarrinhoController.addProduto);
+routes.put("/carrinho/removeProduto/:produtoId", passport.authenticate('jwt', {session:false}), CarrinhoController.removeProduto);
+routes.put("/carrinho/applyCupom/:cupomId", passport.authenticate('jwt', {session:false}), CarrinhoController.applyCupom);
 
+
+// Rotas de pedido
 routes.post("/pedido/:carrinhoId", PedidoController.create);
 routes.get("/pedido/:pedidoId", PedidoController.read);
-routes.get("/pedidos/:clienteId", PedidoController.readAll);
+routes.get("/pedidos/", passport.authenticate('jwt', {session:false}), PedidoController.readAll);
 routes.delete("/pedido/:pedidoId", PedidoController.destroy);
 
 

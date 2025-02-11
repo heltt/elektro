@@ -6,7 +6,7 @@ const prisma = new PrismaClient();
 class CupomController {
     public async create(req: Request, res: Response) {
         try {
-            const { clienteId } = req.params; // O cupom ao ser criado é atribuído a um cliente
+            const clienteId = req.user; // O cupom ao ser criado é atribuído a um cliente
             const { codigo, tipo, validade, descricao, carrinhoId } = req.body;
 
             const cliente = await prisma.cliente.findUnique({
@@ -148,7 +148,7 @@ class CupomController {
     // Exibe todos os cupons de um usuário
     public async readAll(req: Request, res: Response) {
         try {
-            const { clienteId } = req.params;
+            const clienteId = req.user;
 
             // Verifica se o cliente existe
             const cliente = await prisma.cliente.findUnique({

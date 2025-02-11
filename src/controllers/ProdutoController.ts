@@ -6,7 +6,7 @@ const prisma = new PrismaClient();
 class ProdutoController {
     public async create(req: Request, res: Response) {
         try {
-            const { clienteId } = req.params;
+            const clienteId = req.user;
             const { nome, descricao, preco, cor} = req.body;
 
             const cliente = await prisma.cliente.findUnique({
@@ -57,7 +57,7 @@ class ProdutoController {
 
     public async readAll(req: Request, res: Response) {
         try {
-            const { clienteId } = req.params;
+            const clienteId = req.user;
 
             const cliente = await prisma.cliente.findUnique({
                 where: { id: Number(clienteId) },
@@ -100,7 +100,7 @@ class ProdutoController {
 
     public async destroy(req: Request, res: Response) {
         try {
-            const { id } = req.params;
+            const id = req.user;
 
             await prisma.produto.delete({
                 where: { id: Number(id) },

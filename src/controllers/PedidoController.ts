@@ -72,7 +72,7 @@ class PedidoController {
 
     public async readAll(req: Request, res: Response) {
         try {
-            const { clienteId } = req.params;
+            const clienteId = req.user;
 
             const pedidos = await prisma.pedido.findMany({
                 where: { clienteId: Number(clienteId) },
