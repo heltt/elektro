@@ -14,6 +14,9 @@ class ClienteController {
             data: { nome, email, cpf, telefone, hash, salt},
           });
           const token = auth.generateJWT(cliente);
+
+          Mailer.sendEmail(email,"Criação de Conta - Elektro","Bem-vindo à Elektro!");
+          
           res.status(201).json({
             message: "Cliente criado com sucesso",
             cliente: cliente,
@@ -66,7 +69,7 @@ class ClienteController {
             where: { id: Number(id) },
             data: { nome, email, cpf, telefone},
           });
-          Mailer.sendEmail("sylviopastene@gmail.com","Nodemailer","Seus dados foram alterados.");
+          
           res.status(200).json(cliente);
         } catch (error) {
           res.status(400).json({ error: "Erro ao atualizar cliente" });
@@ -79,7 +82,7 @@ class ClienteController {
           const cliente = await prisma.cliente.delete({
             where: { id: Number(id) },
           });
-    
+          Mailer.sendEmail(cliente.email,"Exclusão de Conta - Elektro","Vamos sentir sua falta na Elektro.");
           res.status(204).json(cliente);
         } catch (error) {
           res.status(400).json({ error: "Erro ao deletar cliente" });
