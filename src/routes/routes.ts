@@ -54,7 +54,7 @@ routes.post("/cliente/meusProdutos/:produtoId/addImg", passport.authenticate('jw
 // Rotas de favoritos
 routes.post("/cliente/novoFavorito/:produtoId", passport.authenticate('jwt', {session:false}), FavoritoController.create);
 routes.get("/favoritos/:id", FavoritoController.read);
-routes.get("/clientes/meusFavoritos", passport.authenticate('jwt', {session:false}),FavoritoController.readAll);
+routes.get("/cliente/meusFavoritos", passport.authenticate('jwt', {session:false}),FavoritoController.readAll);
 routes.delete("/cliente/meusFavoritos/:id", passport.authenticate('jwt', {session:false}),FavoritoController.destroy);
 
 
@@ -70,7 +70,7 @@ routes.put("/carrinho/applyCupom/:cupomId", passport.authenticate('jwt', {sessio
 // Rotas de pedido
 routes.post("/pedido/:carrinhoId", PedidoController.create);
 routes.get("/pedido/:pedidoId", PedidoController.read);
-routes.get("/pedidos/", passport.authenticate('jwt', {session:false}), PedidoController.readAll);
+routes.get("/cliente/pedidos/", passport.authenticate('jwt', {session:false}), PedidoController.readAll);
 routes.delete("/pedido/:pedidoId", PedidoController.destroy);
 
 
